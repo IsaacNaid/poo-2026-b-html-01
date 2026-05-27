@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniMarket - Catálogo Principal</title>
+    <style>
+        :root {
+            --primary: #4f46e5; /* Azul índigo moderno */
+            --primary-hover: #4338ca;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #10b981; /* Verde para precios y éxito */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+        }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .search-bar {
+            flex: 0 1 500px;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.95rem;
+            background-color: var(--background);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background-color: var(--surface);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .btn-publish {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .btn-publish:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .profile-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            object-fit: cover;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: calc(100vh - 73px);
+        }
+
+        /* --- FILTROS (SIDEBAR) --- */
+        .sidebar {
+            background-color: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            position: sticky;
+            top: 73px;
+            height: calc(100vh - 73px);
+        }
+
+        .filter-section {
+            margin-bottom: 2rem;
+        }
+
+        .filter-section h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .filter-list {
+            list-style: none;
+        }
+
+        .filter-item {
+            margin-bottom: 0.6rem;
+        }
+
+        .filter-item label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .filter-item input[type="checkbox"] {
+            accent-color: var(--primary);
+        }
+
+        /* --- PANEL DE PRODUCTOS --- */
+        .content-area {
+            padding: 2rem;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* --- TARJETA DE PRODUCTO (CARD) --- */
+        .product-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .product-img-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 75%; /* Ratio 4:3 */
+            background-color: #f1f5f9;
+        }
+
+        .product-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: auto;
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-view {
+            width: 100%;
+            padding: 0.5rem;
+            background-color: var(--background);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-view:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* --- MODAL DETALLES --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .modal-content {
+            background-color: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .offer-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .offer-section input {
+            padding: 0.5rem;
+            width: 120px;
+            margin-right: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="brand">UniMarket</a>
+        
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="¿Qué estás buscando hoy, compañero?" oninput="filtrarProductos()">
+        </div>
+
+        <div class="nav-actions">
+            <a href="publicar.html" class="btn-publish">+ Publicar Artículo</a>
+            <div class="profile-menu">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="profile-pic" alt="Perfil">
+                <span>Mi Perfil</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-layout">
+        
+        <aside class="sidebar">
+            <div class="filter-section">
+                <h3>Categorías</h3>
+                <ul class="filter-list">
+                    <li class="filter-item"><label><input type="checkbox" class="category-filter" value="Libros" onchange="filtrarProductos()"> Libros y Copias</label></li>
+                    <li class="filter-item"><label><input type="checkbox" class="category-filter" value="Electrónica" onchange="filtrarProductos()"> Electrónica</label></li>
+                    <li class="filter-item"><label><input type="checkbox" class="category-filter" value="Ropa" onchange="filtrarProductos()"> Ropa y Accesorios</label></li>
+                    <li class="filter-item"><label><input type="checkbox" class="category-filter" value="Otros" onchange="filtrarProductos()"> Otros</label></li>
+                </ul>
+            </div>
+
+            <div class="filter-section">
+                <h3>Estado del Artículo</h3>
+                <ul class="filter-list">
+                    <li class="filter-item"><label><input type="checkbox"> Nuevo</label></li>
+                    <li class="filter-item"><label><input type="checkbox"> Usado - Como nuevo</label></li>
+                    <li class="filter-item"><label><input type="checkbox"> Usado - Buen estado</label></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <div class="content-header">
+                <h2>Artículos Disponibles</h2>
+                <span id="items-count" style="color: var(--text-muted); font-size: 0.9rem;">Mostrando 0 productos</span>
+            </div>
+
+            <div class="products-grid" id="grid-productos"></div>
+        </main>
+    </div>
+
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="cerrarModal()">&times;</button>
+            <h2 id="modal-title">Título del Producto</h2>
+            <div class="modal-body">
+                <div>
+                    <img id="modal-img" src="" style="width: 100%; border-radius: 8px; object-fit: cover;" alt="Producto">
+                </div>
+                <div>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;" id="modal-category">Categoría</p>
+                    <h3 style="color: var(--accent); margin: 0.5rem 0;" id="modal-price">$0.00</h3>
+                    <p id="modal-desc">Descripción detallada del artículo...</p>
+                    <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted);">Vendedor: <span id="modal-seller" style="font-weight: 600; color: var(--text-main);">Juan Pérez</span></p>
+                    
+                    <div class="offer-section">
+                        <h4>¿Te interesa? Haz una oferta</h4>
+                        <form action="OfertaServlet" method="POST" style="margin-top: 0.5rem;">
+                            <input type="number" name="monto_oferta" placeholder="Monto $" required>
+                            <button type="submit" style="background-color: var(--primary); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer;">Enviar Oferta</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array de objetos simulando la respuesta de la base de datos de Oracle
+        const listaProductos = [
+            { id: 1, titulo: "Cálculo de Stewart 7ma Edición", categoria: "Libros", precio: 350, descripcion: "Libro original, excelente estado. Sin rayones ni hojas rotas. Ideal para Ingeniería.", vendedor: "Carlos Mendoza", img: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400" },
+            { id: 2, titulo: "Calculadora Texas Instruments TI-84", categoria: "Electrónica", precio: 1200, descripcion: "Calculadora graficadora programable. Incluye cable de carga. Desgaste estético mínimo.", vendedor: "Ana Sofía Ruiz", img: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400" },
+            { id: 3, titulo: "Bata de Laboratorio Talla M", categoria: "Ropa", precio: 150, descripcion: "100% algodón, usada solo un semestre para Química. Ya lavada y planchada.", vendedor: "Miguel Ángel Torres", img: "https://images.unsplash.com/photo-1581056771107-24ca5f033842?w=400" },
+            { id: 4, titulo: "Audífonos Sony WH-CH510", categoria: "Electrónica", precio: 450, descripcion: "Inalámbricos Bluetooth, color negro. Batería le dura semanas. Almohadillas impecables.", vendedor: "Diana Laura Gómez", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" }
+        ];
+
+        // Función para renderizar tarjetas en el HTML
+        function renderizarTarjetas(productos) {
+            const grid = document.getElementById('grid-productos');
+            const countSpan = document.getElementById('items-count');
+            grid.innerHTML = "";
+            
+            countSpan.innerText = `Mostrando ${productos.length} producto(s)`;
+
+            productos.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-img-wrapper">
+                        <img class="product-img" src="${prod.img}" alt="${prod.titulo}">
+                    </div>
+                    <div class="product-info">
+                        <span class="product-category">${prod.categoria}</span>
+                        <h4 class="product-title">${prod.titulo}</h4>
+                        <div class="product-price">$${prod.precio.toFixed(2)}</div>
+                        <button class="btn-view" onclick="verDetalles(${prod.id})">Ver detalles</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Función para los filtros en tiempo real (Buscador y Categorías)
+        function filtrarProductos() {
+            const textoBusqueda = document.getElementById('search-input').value.toLowerCase();
+            
+            // Obtener categorías seleccionadas
+            const checkboxes = document.querySelectorAll('.category-filter:checked');
+            const categoriasSeleccionadas = Array.from(checkboxes).map(cb => cb.value);
+
+            const productosFiltrados = listaProductos.filter(prod => {
+                const coincideTexto = prod.titulo.toLowerCase().includes(textoBusqueda);
+                const coincideCategoria = categoriasSeleccionadas.length === 0 || categoriasSeleccionadas.includes(prod.categoria);
+                return coincideTexto && coincideCategoria;
+            });
+
+            renderizarTarjetas(productosFiltrados);
+        }
+
+        // Modal Logic
+        function verDetalles(id) {
+            const prod = listaProductos.find(p => p.id === id);
+            if(prod) {
+                document.getElementById('modal-title').innerText = prod.titulo;
+                document.getElementById('modal-img').src = prod.img;
+                document.getElementById('modal-category').innerText = prod.categoria;
+                document.getElementById('modal-price').innerText = `$${prod.precio.toFixed(2)}`;
+                document.getElementById('modal-desc').innerText = prod.descripcion;
+                document.getElementById('modal-seller').innerText = prod.vendedor;
+                
+                document.getElementById('product-modal').style.display = 'flex';
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('product-modal').style.display = 'none';
+        }
+
+        // Inicializar la página mostrando todos los productos al cargar
+        window.onload = () => renderizarTarjetas(listaProductos);
+    </script>
+</body>
+</html>
